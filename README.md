@@ -1,41 +1,23 @@
-## chatGPT for genetics
+## Coding Challenge-3: Natural Language Queries Against a Structural Database
 
-This is the code repo for my submission at [Scale AI Generative AI & LLM hackathon](https://twitter.com/alexandr_wang/status/1610361991830331392) last week. Please feel free to fork or submit PR for feature request.
+This repo is forked from Onuralp Soylemez's (@cx0) repo: https://github.com/cx0/chatGPT-for-genetics
 
-### Demo
+The goal of this coding challenge is to build a function that takes a natural language instruction or a question, and returns an appropriate response using using Open Targets API endpoints [Open Targets Platform GraphQL](https://platform-docs.opentargets.org/data-access/graphql-api).  
 
-Q: What's the disease / phenotype associated with gene of my interest?
+You may use Onuralp's scripts as starting point, or you can write it from scratch. 
 
-![Asking Open Targets questions about gene-phenotype associations.](demo.svg)
 
-### Motivation
+### Tasks:
+**1. Handle single step queries**
+e.g. "What are the targets of vorinostat?", "Find drugs that are used for treating ulcerative colitis." etc.
 
-[Open Targets](https://platform.opentargets.org/) is the largest public-private partnership to curate information about genetic diseases, clinical trials and molecular entities (e.g., drugs) to accelerate drug discovery research. While the web interface provides a user-friendly web interface for making simple queries, it does not provide a convenient search engine to support more sophisticated queries.
+**2. 2-step queries**
+e.g. "Which diseases are associated with the genes targetted by fasudil?", "Show all the diseases that have at least 5 pathways associated with Alzheimer"
 
-Fortunately, Open Targets team provides a graphQL API to access and query relevant data from a number of useful endpoints. However, most biologists are not comfortable to write their own graphQL queries or access these data via API. Can we leverage GPT-based search engines to translate natural language to valid graphQL queries to navigate the richest drug discovery dataset?
+### Expectations:
+- You can build the solution on Jupyter notebook, but we prefer to see as a CLI functionality
+- The response should list the queried entities, no extra paragraphs or text. 
+- We will test the solution on a set of held out instructions and questions (10 cases for each task). 
+- You may need an OpenAI account for OpenAI api or a similar LLM API access. 
 
-### Inspiration
 
-I really liked [BirdSQL](https://twitter.com/perplexity_ai/status/1603441221753372673) - Perplexity AI's GPT-based search engine using OpenAI Codex to translate natural language to SQL queries to navigate Twitter. Make sure to check it out yourself [here](https://www.perplexity.ai/sql). Great choice to showcase the capabilities of their search engine and very impressive implementation overall!
-
-### Implementation
-
-As you can see with BirdSQL, [OpenAI's Codex tool](https://www.youtube.com/watch?v=SGUCcjHTmGY) does a wonderful job translating natural language to SQL queries. OpenAI suggests specific prompt templates to improve the generated text response. For text-to-SQL code completion task, they suggest to prompt the model with SQL tables and their properties. I was curious to find out whether Codex models are capable of translating text to graphQL queries given a similar schema.
-
-```
-Input  : prompt template with schema + user query
-Model  : code-davinci-002 Codex model
-Output : user query in graphQL syntax
-```
-
-Once we have a valid graphQL query, we can submit this query to the relevant API endpoint provided by [Open Targets Platform GraphQL](https://platform-docs.opentargets.org/data-access/graphql-api) and relay the response to the user. This approach did not work well. Codex model populated unnecessary extra fields that resulted in invalid graphQL queries.
-
-Instead, providing an [illustrative example graphQL query](graphql_schema.txt) was sufficient for Codex to produce a decent text-to-graphQL translation that plays nicely with Open Target graphQL API. Demo code in this repo used this approach. I'm looking forward to exploring other prompt and fine-tuning strategies to improve text-to-graphQL translation for a wide range of Q&A tasks where there is a well-structured domain-specific graphQL API available.
-
-### TODO
-
-- [ ] SQL-to-graphQL direct translation may be a better option?
-- [ ] Expand prompt capabilities to answer other frequently asked questions
-- [ ] Hook up a Slack chatbot for more user-friendly interaction
-- [ ] Slick web interface similar to BirdSQL?
-- [ ] Implement using langchain?
