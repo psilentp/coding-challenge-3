@@ -20,4 +20,9 @@ e.g. "Which diseases are associated with the genes targetted by fasudil?", "Show
 - We will test the solution on a set of held out instructions and questions (10 cases for each task). 
 - You may need an OpenAI account for OpenAI api or a similar LLM API access. 
 
+## Results:
+
+The approach demonstrated by Onuralp seemed to work well but gpt-3.5 seemed to have a hard time with relationships that were not in the examples eg gene->expression. I added a few additional priming examples. Additionally, I added a list of the types in the opentargets graphQL schema. I tried including the entire schema, but ran into a token limit on the context. To circumvent this limitation I wrote a small function to have gpt introspect the schema as needed. This is only called on retry when generated graphql query fails.
+
+To followup, my next steps would be to work on better ways to update the context or knowledge base with the schema. Perhaps fine-tuning the language model for this task would help. The current approach I'm using still has issues when there is interference between the meaning of a term in the context of a query and the names of the types in the schema e.g. "pathways" and "targets". It may actually be simpler to wrap the queries in a set of user-defined functions and have GPT target the parameters of these functions rather than have gpt write the queries themselves.
 
